@@ -19,7 +19,7 @@ const CONFIG = {
 
   BUSINESS_NAME: 'Paws, Play & Stay with Hailey',
   PHONE: '609-218-0968',
-  WEBSITE: 'https://dmg159.github.io/Hailey_dog_walking/',
+  WEBSITE: 'https://pawsplaystaywithhailey.com/',
 
   // Send the customer a copy of their request.
   CUSTOMER_COPY: true,

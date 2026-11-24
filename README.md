@@ -1,8 +1,8 @@
 # Paws, Play & Stay with Hailey: website
 
 A static one-page site for Paws, Play & Stay with Hailey (dog walking, pet sitting and boarding in
-Boulder, CO). It's hosted free on GitHub Pages:
-https://dmg159.github.io/Hailey_dog_walking/
+Boulder, CO). It's hosted free on GitHub Pages at its own domain:
+https://pawsplaystaywithhailey.com/ (the old dmg159.github.io address redirects there)
 
 ## Settings to fill in: `js/config.js`
 
@@ -28,8 +28,7 @@ After changing `css/styles.css` or anything in `js/`, bump the `?v=` date in the
 ## Style
 It matches Hailey's business card and flyer. From the card: the Shrikhand script, the orange, peach and mustard stripes, and olive. From the flyer: forest green, cream, mountain ridges and the Kalam handwritten tagline. Body text is Quicksand. The colors are CSS variables at the top of `css/styles.css`.
 
-## Moving to a custom domain
-The card lists pawsplaystaywithhailey.com. It's registered but not pointed anywhere yet.
-Replace `https://dmg159.github.io/Hailey_dog_walking/` everywhere (index.html,
-robots.txt, sitemap.xml), add a `CNAME` file, and set the domain under
-Settings → Pages. robots.txt only takes effect at a domain's root.
+## Domain
+pawsplaystaywithhailey.com is registered through Hailey's Google Workspace (managed at Squarespace Domains). Its DNS points at GitHub Pages:
+A records on `@` to 185.199.108.153, .109.153, .110.153, .111.153, and a CNAME `www` → `dmg159.github.io`.
+The `CNAME` file in this repo tells GitHub Pages to serve the site there. Leave the Google Workspace MX, SPF, DKIM and DMARC records alone; they run Hailey's email.
