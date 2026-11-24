@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Quicksand:wght@500;600;700&family=Shrikhand&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=2026-11-24b">
+  <link rel="stylesheet" href="css/styles.css?v=2026-11-24c">
 
   <!-- Structured data. Add "email" and "openingHours" once known. -->
   <script type="application/ld+json">
@@ -314,8 +314,14 @@
         <p class="lead">Booking, a free meet-and-greet, or just a question, it all starts here. Tell Hailey what you need and she'll reply to confirm availability, then send your booking confirmation and payment instructions. Outside Boulder and the nearby towns? Ask anyway.</p>
 
         <form class="form" id="request-form" data-form-name="request" novalidate>
+          <!-- FormSubmit settings; filled in from js/config.js -->
           <input type="hidden" name="_subject" value="New request: Paws, Play &amp; Stay with Hailey">
-          <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_cc" value="">
+          <input type="hidden" name="_autoresponse" value="">
+          <input type="hidden" name="_blacklist" value="">
+          <input type="hidden" name="_next" value="">
+          <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 
           <fieldset>
             <legend>Your request</legend>
@@ -471,7 +477,7 @@
     </symbol>
   </svg>
 
-  <script src="js/config.js?v=2026-11-24b"></script>
-  <script src="js/main.js?v=2026-11-24b"></script>
+  <script src="js/config.js?v=2026-11-24c"></script>
+  <script src="js/main.js?v=2026-11-24c"></script>
 </body>
 </html>

@@ -77,7 +77,15 @@
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  /* ---------- Forms (Formspree) + tracking ---------- */
+  /* ---------- Request form (FormSubmit) + tracking ---------- */
+  // The form posts straight to FormSubmit, which shows its "I'm not a robot"
+  // check, emails the request (cc + auto-reply copy to the customer) and then
+  // sends the visitor back here with ?sent=request.
+  var SITE_URL = location.protocol === "https:" || location.protocol === "http:"
+    ? location.origin + location.pathname
+    : "https://dmg159.github.io/Hailey_dog_walking/";
+  var PAGE_OPENED = Date.now();
+
   function fallbackMessage() {
     var ways = [];
     if (cfg.PHONE) ways.push("call or text " + cfg.PHONE);
@@ -90,11 +98,29 @@
     var name = form.getAttribute("data-form-name");
     var status = form.querySelector(".form-status");
     var button = form.querySelector('button[type="submit"]');
+    var buttonText = button.textContent;
     var started = false;
 
     function setStatus(msg, kind) {
       status.textContent = msg;
       status.className = "form-status" + (kind ? " " + kind : "");
+    }
+    function setField(field, value) {
+      var el = form.elements[field];
+      if (!el) return;
+      if (value) el.value = value;
+      else el.parentNode.removeChild(el); // FormSubmit ignores missing options
+    }
+
+    if (cfg.FORM_EMAIL) {
+      form.action = "https://formsubmit.co/" + encodeURIComponent(cfg.FORM_EMAIL);
+      form.method = "POST";
+      var cc = (cfg.FORM_CC || "").split(",").map(function (s) { return s.trim(); })
+        .filter(function (s) { return s && s.toLowerCase() !== cfg.FORM_EMAIL.toLowerCase(); }).join(",");
+      setField("_cc", cc);
+      setField("_autoresponse", cfg.AUTORESPONSE || "");
+      setField("_blacklist", (cfg.BLOCKED_WORDS || []).join(", "));
+      setField("_next", SITE_URL + "?sent=" + name + "#book");
     }
 
     form.addEventListener("input", function () {
@@ -102,17 +128,16 @@
     });
 
     form.addEventListener("submit", function (e) {
-      e.preventDefault();
-
       // Validation
       var firstBad = null;
       form.querySelectorAll("input, select, textarea").forEach(function (f) {
-        if (f.classList.contains("hp")) return;
+        if (f.type === "hidden" || f.classList.contains("hp")) return;
         var bad = !f.checkValidity();
         f.setAttribute("aria-invalid", bad ? "true" : "false");
         if (bad && !firstBad) firstBad = f;
       });
       if (firstBad) {
+        e.preventDefault();
         var details = firstBad.closest("details");
         if (details) details.open = true;
         firstBad.focus();
@@ -120,31 +145,33 @@
         track("form_error", name + "-validation");
         return;
       }
-
-      if (!cfg.FORMSPREE_ID) {
+      if (!cfg.FORM_EMAIL) {
+        e.preventDefault();
         setStatus(fallbackMessage(), "err");
         track("form_error", name + "-not-configured");
         return;
       }
-
+      if (form.elements["_honey"] && form.elements["_honey"].value) {
+        e.preventDefault(); // a bot filled the hidden field: send nothing
+        return;
+      }
+      if (Date.now() - PAGE_OPENED < 3000) {
+        e.preventDefault(); // too fast for a person: likely a bot
+        setStatus("Please take a moment, then send again.", "err");
+        return;
+      }
+      var who = form.elements["name"] ? form.elements["name"].value.trim() : "";
+      var what = form.elements["service"] ? form.elements["service"].value : "";
+      form.elements["_subject"].value = "New request" + (what ? ": " + what : "") + (who ? " from " + who : "");
       button.disabled = true;
-      setStatus("Sending…");
-      fetch("https://formspree.io/f/" + encodeURIComponent(cfg.FORMSPREE_ID), {
-        method: "POST",
-        body: new FormData(form),
-        headers: { Accept: "application/json" }
-      }).then(function (res) {
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        form.reset();
-        started = false;
-        setStatus("Thanks! Your request is on its way. Hailey will get back to you soon.", "ok");
-        track("generate_lead", name);
-      }).catch(function () {
-        setStatus("Sorry, something went wrong sending that. " + fallbackMessage().replace("Online requests aren't switched on yet. ", ""), "err");
-        track("form_error", name + "-send-failed");
-      }).finally(function () {
-        button.disabled = false;
-      });
+      button.textContent = "Sending…";
+      // The browser now posts to FormSubmit and comes back with ?sent=...
+    });
+
+    // The back button can restore the page with the button still disabled
+    window.addEventListener("pageshow", function () {
+      button.disabled = false;
+      button.textContent = buttonText;
     });
 
     form.addEventListener("change", function (e) {
@@ -153,6 +180,19 @@
       }
     });
   });
+
+  // Back from FormSubmit: thank the visitor, count the lead, tidy the address bar
+  var sentForm = new URLSearchParams(location.search).get("sent");
+  if (sentForm) {
+    var f = document.querySelector('form[data-form-name="' + sentForm + '"]');
+    if (f) {
+      var st = f.querySelector(".form-status");
+      st.textContent = "Thanks! Your request is on its way, and a copy is in your inbox. Hailey will get back to you soon.";
+      st.className = "form-status ok";
+    }
+    track("generate_lead", sentForm);
+    if (history.replaceState) history.replaceState(null, "", location.pathname + location.hash);
+  }
 
   /* ---------- Gallery carousel ---------- */
   var gallery = document.getElementById("gallery-track");

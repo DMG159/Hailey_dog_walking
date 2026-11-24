@@ -9,7 +9,8 @@ https://dmg159.github.io/Hailey_dog_walking/
 | Setting | What it does | Where to get it |
 |---|---|---|
 | `GOATCOUNTER_CODE` | Cookieless analytics plus form events (`form_start`, `generate_lead`, `form_error`). Nothing loads while it's empty. | Free signup at goatcounter.com |
-| `FORMSPREE_ID` | Sends the booking and contact forms to Hailey's email (free plan: 50/month). While it's empty, the forms point visitors to Instagram. | formspree.io → New form |
+| `FORM_EMAIL`, `FORM_CC` | Where the request form sends, through [FormSubmit](https://formsubmit.co) (free, no account, no monthly limit). Set to dillon@dillonmakes.tech for now. The first submission emails that address a one-time **activation link**: click it. To route requests to Hailey, put her address in `FORM_EMAIL` (she activates once) and keep Dillon in `FORM_CC`. | — |
+| `AUTORESPONSE`, `BLOCKED_WORDS` | The auto-reply copy each customer gets, and words that make FormSubmit drop a request as spam (by default, anything containing a web link). | — |
 | `PHONE`, `EMAIL` | Shown in the Contact section. Each is hidden while empty. The phone is set; it's also hard-coded in the header, footer and JSON-LD. | Hailey |
 | `GOOGLE_REVIEW_URL` | Shows the "Leave a Google review" button | Hailey's Google Business Profile |
 
@@ -21,6 +22,9 @@ The 15 photos Jeffrey sent (IMG_0631–0646) are in `images/`: trimmed of phone 
 ## Still needed from Hailey
 - Real testimonials: search `REVIEWS`
 - The cancellation policy: search `TODO`
+
+## Updating CSS or JS
+After changing `css/styles.css` or anything in `js/`, bump the `?v=` date in the `<link>`/`<script>` tags in `index.html` so phones don't keep an old cached copy.
 
 ## Style
 It matches Hailey's business card and flyer. From the card: the Shrikhand script, the orange, peach and mustard stripes, and olive. From the flyer: forest green, cream, mountain ridges and the Kalam handwritten tagline. Body text is Quicksand. The colors are CSS variables at the top of `css/styles.css`.
