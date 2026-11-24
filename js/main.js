@@ -127,21 +127,51 @@
       if (!started) { started = true; track("form_start", name); }
     });
 
+    // Plain-language label for a field, e.g. "Phone number"
+    function labelFor(f) {
+      var label = f.closest("label");
+      if (!label) return f.name;
+      var copy = label.cloneNode(true);
+      copy.querySelectorAll("input, select, textarea, .field-error, .opt").forEach(function (n) { n.remove(); });
+      return copy.textContent.replace(/\s+/g, " ").trim();
+    }
+    function errorText(f) {
+      if (f.validity.valueMissing) return f.tagName === "SELECT" ? "Please choose one." : "Please fill this in.";
+      if (f.validity.typeMismatch && f.type === "email") return "Please enter a full email address, like name@example.com.";
+      if (f.validity.rangeUnderflow && f.type === "date") return "Please pick today or a later date.";
+      return f.validationMessage || "Please check this.";
+    }
+    function showFieldError(f, msg) {
+      var label = f.closest("label") || f.parentNode;
+      var el = label.querySelector(".field-error");
+      if (!msg) { if (el) el.remove(); f.removeAttribute("aria-describedby"); return; }
+      if (!el) {
+        el = document.createElement("span");
+        el.className = "field-error";
+        el.id = "err-" + f.name;
+        label.appendChild(el);
+      }
+      el.textContent = msg;
+      f.setAttribute("aria-describedby", el.id);
+    }
+
     form.addEventListener("submit", function (e) {
-      // Validation
-      var firstBad = null;
+      // Validation: mark every problem field and say which ones
+      var bad = [];
       form.querySelectorAll("input, select, textarea").forEach(function (f) {
         if (f.type === "hidden" || f.classList.contains("hp")) return;
-        var bad = !f.checkValidity();
-        f.setAttribute("aria-invalid", bad ? "true" : "false");
-        if (bad && !firstBad) firstBad = f;
+        var ok = f.checkValidity();
+        f.setAttribute("aria-invalid", ok ? "false" : "true");
+        showFieldError(f, ok ? "" : errorText(f));
+        if (!ok) bad.push(f);
       });
-      if (firstBad) {
+      if (bad.length) {
         e.preventDefault();
-        var details = firstBad.closest("details");
+        var details = bad[0].closest("details");
         if (details) details.open = true;
-        firstBad.focus();
-        setStatus("Please fill in the highlighted fields.", "err");
+        setStatus("Almost there! Please fix: " + bad.map(labelFor).join(", ") + ".", "err");
+        bad[0].scrollIntoView({ block: "center", behavior: "smooth" });
+        bad[0].focus({ preventScroll: true });
         track("form_error", name + "-validation");
         return;
       }
@@ -151,10 +181,8 @@
         track("form_error", name + "-not-configured");
         return;
       }
-      if (form.elements["_honey"] && form.elements["_honey"].value) {
-        e.preventDefault(); // a bot filled the hidden field: send nothing
-        return;
-      }
+      // (A filled-in _honey field is discarded by FormSubmit itself, so no
+      // silent block here: phone autofill can fill it by mistake.)
       if (Date.now() - PAGE_OPENED < 3000) {
         e.preventDefault(); // too fast for a person: likely a bot
         setStatus("Please take a moment, then send again.", "err");
@@ -165,6 +193,7 @@
       form.elements["_subject"].value = "New request" + (what ? ": " + what : "") + (who ? " from " + who : "");
       button.disabled = true;
       button.textContent = "Sending…";
+      setStatus("Sending… next you'll see a quick \u201cI'm not a robot\u201d check, then you'll come right back here.", "");
       // The browser now posts to FormSubmit and comes back with ?sent=...
     });
 
@@ -174,11 +203,17 @@
       button.textContent = buttonText;
     });
 
-    form.addEventListener("change", function (e) {
-      if (e.target.getAttribute("aria-invalid") === "true" && e.target.checkValidity()) {
-        e.target.setAttribute("aria-invalid", "false");
+    // Clear a field's error as soon as it's fixed
+    function recheck(e) {
+      var f = e.target;
+      if (f.getAttribute("aria-invalid") === "true" && f.checkValidity()) {
+        f.setAttribute("aria-invalid", "false");
+        showFieldError(f, "");
+        if (!form.querySelector('[aria-invalid="true"]')) setStatus("", "");
       }
-    });
+    }
+    form.addEventListener("input", recheck);
+    form.addEventListener("change", recheck);
   });
 
   // Back from FormSubmit: thank the visitor, count the lead, tidy the address bar
