@@ -15,7 +15,7 @@ window.SITE_CONFIG = {
   FORM_ENDPOINT: "",
 
   // Hailey's contact details. Leave empty to hide that option on the site.
-  PHONE: "609-218-0968",
+  PHONE: "",        // left empty on purpose so no number is published
   EMAIL: "",        // e.g. "hailey@example.com"
 
   // Link to Hailey's Google review page (from her Google Business Profile).

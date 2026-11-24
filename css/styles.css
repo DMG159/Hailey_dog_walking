@@ -89,8 +89,6 @@ p { margin: 0 0 1em; }
 .site-nav { display: flex; gap: 2px; margin-left: auto; }
 .site-nav a { color: var(--brown); text-decoration: none; font-weight: 700; font-size: .93rem; padding: 8px 9px; border-radius: 8px; white-space: nowrap; }
 .site-nav a:hover { background: var(--peach-soft); }
-.header-phone { display: inline-flex; align-items: center; gap: 6px; color: var(--forest); text-decoration: none; font-weight: 700; font-size: .93rem; white-space: nowrap; }
-.header-phone svg { width: 18px; height: 18px; fill: var(--forest); }
 .header-cta { padding: .7em 1.1em; font-size: .92rem; white-space: nowrap; }
 .nav-toggle { display: none; background: none; border: 0; width: 44px; height: 44px; cursor: pointer; border-radius: 10px; }
 .nav-toggle .bars, .nav-toggle .bars::before, .nav-toggle .bars::after { display: block; width: 22px; height: 2.5px; border-radius: 2px; background: var(--brown); position: relative; margin: 0 auto; transition: transform .2s; }
@@ -280,15 +278,13 @@ p { margin: 0 0 1em; }
 @media (max-width: 1340px) {
   .car-prev { left: 6px; }
   .car-next { right: 6px; }
-  .header-phone span { display: none; }
 }
 @media (max-width: 1080px) {
   .site-nav { position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; background: var(--paper); border-bottom: 1px solid var(--line); padding: 10px 20px 18px; display: none; }
   .site-nav.open { display: flex; }
   .site-nav a { padding: 12px 10px; font-size: 1rem; }
   .nav-toggle { display: block; order: 4; }
-  .header-phone { margin-left: auto; }
-  .header-phone span { display: inline; }
+  .header-cta { margin-left: auto; }
   .safety-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 860px) {
@@ -315,8 +311,6 @@ p { margin: 0 0 1em; }
   .brand-name { font-size: 1.1rem; }
   .brand-mark { width: 22px; height: 22px; }
   .header-inner { gap: 8px; }
-  .header-phone span { display: none; }
-  .header-phone svg { width: 22px; height: 22px; }
   .header-cta { font-size: .8rem; padding: .65em .85em; }
   .grid-2 { grid-template-columns: 1fr; }
   .services { grid-template-columns: 1fr; }

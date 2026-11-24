@@ -10,7 +10,7 @@ https://pawsplaystaywithhailey.com/ (the old dmg159.github.io address redirects 
 |---|---|---|
 | `GOATCOUNTER_CODE` | Cookieless analytics plus form events (`form_start`, `generate_lead`, `form_error`). Nothing loads while it's empty. | Free signup at goatcounter.com |
 | `FORM_ENDPOINT` | The request form's Google Apps Script web app URL. It emails Hailey from her Workspace account (cc Dillon), logs a Google Sheet row and sends the customer a copy. While it's empty, the form asks visitors to call or text. | Follow [apps-script/SETUP.md](apps-script/SETUP.md) |
-| `PHONE`, `EMAIL` | Shown in the Contact section. Each is hidden while empty. The phone is set; it's also hard-coded in the header, footer and JSON-LD. | Hailey |
+| `PHONE`, `EMAIL` | Shown in the Contact section and form messages. Each is hidden while empty. The phone is intentionally left empty so it isn't published. | Hailey |
 | `GOOGLE_REVIEW_URL` | Shows the "Leave a Google review" button | Hailey's Google Business Profile |
 
 Once the email is known, also add `"email"` to the JSON-LD block in `index.html`.
