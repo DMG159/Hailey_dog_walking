@@ -73,7 +73,10 @@ function doPost(e) {
     if (tooMany_(data.email)) return json_({ ok: false, error: 'rate' });
 
     const text = FIELDS.map(([key]) => data[key]).join(' ').toLowerCase();
-    const spam = !!clean_(p._honey) || CONFIG.SPAM_WORDS.some((w) => text.indexOf(w) !== -1);
+    const reasons = [];
+    if (clean_(p._honey)) reasons.push('hidden anti-spam field was filled');
+    CONFIG.SPAM_WORDS.forEach((w) => { if (text.indexOf(w) !== -1) reasons.push('contains "' + w + '"'); });
+    const spam = reasons.length ? reasons.join(', ') : '';
 
     const lock = LockService.getScriptLock();
     lock.waitLock(20000);
@@ -165,7 +168,7 @@ function sheet_() {
 }
 
 function addRow_(data, spam) {
-  sheet_().appendRow([new Date(), spam ? 'Possible spam' : ''].concat(FIELDS.map(([key]) => data[key])));
+  sheet_().appendRow([new Date(), spam ? 'Possible spam: ' + spam : ''].concat(FIELDS.map(([key]) => data[key])));
 }
 
 function table_(data) {
@@ -179,7 +182,7 @@ function emailHailey_(data, spam) {
   const to = owner_();
   const cc = CONFIG.CC.split(',').map((s) => s.trim())
     .filter((s) => s && s.toLowerCase() !== to.toLowerCase()).join(',');
-  const subject = (spam ? '[Possible spam] ' : '') + 'New request' +
+  const subject = (spam ? '[Possible spam: ' + spam + '] ' : '') + 'New request' +
     (data.service ? ': ' + data.service : '') + ' from ' + data.name;
   const msg = {
     to: to,
@@ -188,7 +191,10 @@ function emailHailey_(data, spam) {
     name: 'Website request form',
     htmlBody:
       '<p style="font-family:Arial,sans-serif">New request from the website. Press Reply to answer ' +
-      esc_(data.name) + ' directly.</p>' + table_(data),
+      esc_(data.name) + ' directly.</p>' +
+      (spam ? '<p style="font-family:Arial,sans-serif;color:#a12c1b"><b>Flagged as possible spam:</b> ' + esc_(spam) +
+        '. No copy was sent to the customer. If it\'s a real request, just reply.</p>' : '') +
+      table_(data),
   };
   if (cc) msg.cc = cc;
   MailApp.sendEmail(msg);
