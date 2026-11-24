@@ -4,7 +4,7 @@ The website's request form sends to a small script that runs in Hailey's Google
 Workspace account. For each request it:
 
 - adds a row to a Google Sheet called **Website requests: Paws, Play & Stay with Hailey**,
-- emails the request to Hailey, cc dillon@dillonmakes.tech (pressing Reply answers the customer),
+- emails the request to Hailey at hnardone@pawsplaystaywithhailey.com, cc dillon@dillonmakes.tech (pressing Reply answers the customer),
 - emails the customer a copy, sent from Hailey's address.
 
 It's free. A Workspace account can send about 1,500 emails a day.

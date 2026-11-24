@@ -12,8 +12,8 @@
  */
 
 const CONFIG = {
-  // Where requests go. Leave blank to use the Google account that deploys this script.
-  SEND_TO: '',
+  // Where requests go (Hailey). Leave blank to use the Google account that deploys this script.
+  SEND_TO: 'hnardone@pawsplaystaywithhailey.com',
   // Copied on every request. Comma-separate several addresses, or leave blank.
   CC: 'dillon@dillonmakes.tech',
 
