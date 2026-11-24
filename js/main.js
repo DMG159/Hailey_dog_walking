@@ -155,4 +155,50 @@
       }
     });
   });
+
+  /* ---------- Gallery carousel ---------- */
+  var track = document.getElementById("gallery-track");
+  if (track) {
+    var slides = Array.prototype.slice.call(track.children);
+    var prevBtn = document.querySelector(".car-prev");
+    var nextBtn = document.querySelector(".car-next");
+    var dotsWrap = document.querySelector(".car-dots");
+    var dots = slides.map(function (slide, i) {
+      slide.setAttribute("role", "group");
+      slide.setAttribute("aria-roledescription", "slide");
+      slide.setAttribute("aria-label", (i + 1) + " of " + slides.length);
+      var b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", "Show photo " + (i + 1));
+      b.addEventListener("click", function () { goTo(i); });
+      dotsWrap.appendChild(b);
+      return b;
+    });
+    function step() {
+      return slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth;
+    }
+    function goTo(i) {
+      i = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: "smooth" });
+    }
+    function perView() { return Math.max(1, Math.round(track.clientWidth / step())); }
+    function update() {
+      var max = track.scrollWidth - track.clientWidth - 2;
+      var idx = track.scrollLeft >= max ? slides.length - 1 : Math.round(track.scrollLeft / step());
+      prevBtn.disabled = track.scrollLeft <= 2;
+      nextBtn.disabled = track.scrollLeft >= max;
+      dots.forEach(function (d, i) { d.setAttribute("aria-current", i === idx ? "true" : "false"); });
+    }
+    prevBtn.addEventListener("click", function () { goTo(Math.round(track.scrollLeft / step()) - perView()); });
+    nextBtn.addEventListener("click", function () { goTo(Math.round(track.scrollLeft / step()) + perView()); });
+    var ticking = false;
+    track.addEventListener("scroll", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { ticking = false; update(); });
+    }, { passive: true });
+    track.addEventListener("scrollend", update);
+    window.addEventListener("resize", update);
+    update();
+  }
 })();

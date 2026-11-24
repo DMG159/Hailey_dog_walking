@@ -16,7 +16,7 @@ https://dmg159.github.io/Hailey_dog_walking/
 Once the email is known, also add `"email"` to the JSON-LD block in `index.html`.
 
 ## Photos
-The 15 photos Jeffrey sent (IMG_0631–0646) are in `images/`: trimmed of phone screenshot bars, resized and saved as JPG. `hailey-portrait` is Meet Hailey, `mealtime-heart` is the updates section and `gallery-*` is the gallery. To add a photo to the gallery, copy one `<figure>` in the gallery section and change `src`, `alt` and the caption. Only post clients' pets with their permission.
+The 15 photos Jeffrey sent (IMG_0631–0646) are in `images/`: trimmed of phone screenshot bars, resized and saved as JPG. `hailey-portrait` is Meet Hailey, `mealtime-heart` is the updates section and `gallery-*` is the gallery. The gallery is a swipeable carousel. To add a photo, copy one `<figure>` inside `#gallery-track` and change `src`, `alt` and the caption; the dots update on their own. Only post clients' pets with their permission.
 
 ## Still needed from Hailey
 - Real testimonials: search `REVIEWS`
