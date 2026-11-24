@@ -77,13 +77,9 @@
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  /* ---------- Request form (FormSubmit) + tracking ---------- */
-  // The form posts straight to FormSubmit, which shows its "I'm not a robot"
-  // check, emails the request (cc + auto-reply copy to the customer) and then
-  // sends the visitor back here with ?sent=request.
-  var SITE_URL = location.protocol === "https:" || location.protocol === "http:"
-    ? location.origin + location.pathname
-    : "https://dmg159.github.io/Hailey_dog_walking/";
+  /* ---------- Request form (Google Apps Script) + tracking ---------- */
+  // Sends the form to Hailey's Apps Script web app (see apps-script/), which
+  // emails her (cc Dillon), logs a Google Sheet row and emails the customer a copy.
   var PAGE_OPENED = Date.now();
 
   function fallbackMessage() {
@@ -104,23 +100,6 @@
     function setStatus(msg, kind) {
       status.textContent = msg;
       status.className = "form-status" + (kind ? " " + kind : "");
-    }
-    function setField(field, value) {
-      var el = form.elements[field];
-      if (!el) return;
-      if (value) el.value = value;
-      else el.parentNode.removeChild(el); // FormSubmit ignores missing options
-    }
-
-    if (cfg.FORM_EMAIL) {
-      form.action = "https://formsubmit.co/" + encodeURIComponent(cfg.FORM_EMAIL);
-      form.method = "POST";
-      var cc = (cfg.FORM_CC || "").split(",").map(function (s) { return s.trim(); })
-        .filter(function (s) { return s && s.toLowerCase() !== cfg.FORM_EMAIL.toLowerCase(); }).join(",");
-      setField("_cc", cc);
-      setField("_autoresponse", cfg.AUTORESPONSE || "");
-      setField("_blacklist", (cfg.BLOCKED_WORDS || []).join(", "));
-      setField("_next", SITE_URL + "?sent=" + name + "#book");
     }
 
     form.addEventListener("input", function () {
@@ -156,6 +135,7 @@
     }
 
     form.addEventListener("submit", function (e) {
+      e.preventDefault();
       // Validation: mark every problem field and say which ones
       var bad = [];
       form.querySelectorAll("input, select, textarea").forEach(function (f) {
@@ -166,7 +146,6 @@
         if (!ok) bad.push(f);
       });
       if (bad.length) {
-        e.preventDefault();
         var details = bad[0].closest("details");
         if (details) details.open = true;
         setStatus("Almost there! Please fix: " + bad.map(labelFor).join(", ") + ".", "err");
@@ -175,32 +154,48 @@
         track("form_error", name + "-validation");
         return;
       }
-      if (!cfg.FORM_EMAIL) {
-        e.preventDefault();
+      if (!cfg.FORM_ENDPOINT) {
         setStatus(fallbackMessage(), "err");
         track("form_error", name + "-not-configured");
         return;
       }
-      // (A filled-in _honey field is discarded by FormSubmit itself, so no
-      // silent block here: phone autofill can fill it by mistake.)
       if (Date.now() - PAGE_OPENED < 3000) {
-        e.preventDefault(); // too fast for a person: likely a bot
         setStatus("Please take a moment, then send again.", "err");
         return;
       }
-      var who = form.elements["name"] ? form.elements["name"].value.trim() : "";
-      var what = form.elements["service"] ? form.elements["service"].value : "";
-      form.elements["_subject"].value = "New request" + (what ? ": " + what : "") + (who ? " from " + who : "");
+
       button.disabled = true;
       button.textContent = "Sending…";
-      setStatus("Sending… next you'll see a quick \u201cI'm not a robot\u201d check, then you'll come right back here.", "");
-      // The browser now posts to FormSubmit and comes back with ?sent=...
-    });
+      setStatus("Sending your request…", "");
 
-    // The back button can restore the page with the button still disabled
-    window.addEventListener("pageshow", function () {
-      button.disabled = false;
-      button.textContent = buttonText;
+      var ctrl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 30000);
+      // URL-encoded body = a "simple" request, so no CORS preflight to Apps Script
+      fetch(cfg.FORM_ENDPOINT, {
+        method: "POST",
+        body: new URLSearchParams(new FormData(form)),
+        signal: ctrl ? ctrl.signal : undefined
+      }).then(function (res) {
+        return res.json().catch(function () { return { ok: res.ok }; });
+      }).then(function (out) {
+        if (!out || !out.ok) throw new Error(out && out.error || "failed");
+        form.reset();
+        started = false;
+        setStatus("Thanks! Your request is on its way, and a copy is in your inbox. Hailey will get back to you soon.", "ok");
+        track("generate_lead", name);
+      }).catch(function (err) {
+        if (String(err && err.message) === "rate") {
+          setStatus("You've already sent a few requests. Hailey will be in touch soon!", "ok");
+          return;
+        }
+        setStatus("Sorry, your request didn't go through. Please try again, or " +
+          (cfg.PHONE ? "call or text " + cfg.PHONE : "message Hailey on Instagram") + ".", "err");
+        track("form_error", name + "-send-failed");
+      }).finally(function () {
+        clearTimeout(timer);
+        button.disabled = false;
+        button.textContent = buttonText;
+      });
     });
 
     // Clear a field's error as soon as it's fixed
@@ -215,19 +210,6 @@
     form.addEventListener("input", recheck);
     form.addEventListener("change", recheck);
   });
-
-  // Back from FormSubmit: thank the visitor, count the lead, tidy the address bar
-  var sentForm = new URLSearchParams(location.search).get("sent");
-  if (sentForm) {
-    var f = document.querySelector('form[data-form-name="' + sentForm + '"]');
-    if (f) {
-      var st = f.querySelector(".form-status");
-      st.textContent = "Thanks! Your request is on its way, and a copy is in your inbox. Hailey will get back to you soon.";
-      st.className = "form-status ok";
-    }
-    track("generate_lead", sentForm);
-    if (history.replaceState) history.replaceState(null, "", location.pathname + location.hash);
-  }
 
   /* ---------- Gallery carousel ---------- */
   var gallery = document.getElementById("gallery-track");
