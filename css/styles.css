@@ -136,7 +136,8 @@ p { margin: 0 0 1em; }
 .photo-slot svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero-photo { aspect-ratio: 16 / 9; }
 .about-photo { aspect-ratio: 5 / 6; border-radius: 26px; box-shadow: 10px 10px 0 var(--peach), 20px 20px 0 var(--mustard); }
-.photo-slot img { width: 100%; height: 100%; object-fit: cover; }
+.photo-slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.about-photo img { object-position: 50% 62%; }
 
 /* Sections */
 .section { padding: 88px 0; position: relative; }
@@ -285,7 +286,7 @@ p { margin: 0 0 1em; }
   .hero-grid { padding-left: 36px; }
   .hero-stripes { width: 40px; background: linear-gradient(90deg, var(--orange) 0 8px, transparent 8px 12px, var(--peach) 12px 20px, transparent 20px 24px, var(--mustard) 24px 32px, transparent 32px); }
   .hero-arcs { width: 200px; height: 200px; opacity: .85; }
-  .about-photo { max-width: 400px; aspect-ratio: 4 / 3; }
+  .about-photo { max-width: 420px; aspect-ratio: 1 / 1; }
   .gallery { grid-template-columns: repeat(2, 1fr); }
   .section { padding: 64px 0; }
   .footer-inner { grid-template-columns: 1fr; }
