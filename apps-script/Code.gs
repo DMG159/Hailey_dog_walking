@@ -18,14 +18,13 @@ const CONFIG = {
   CC: 'dillon@dillonmakes.tech',
 
   BUSINESS_NAME: 'Paws, Play & Stay with Hailey',
-  PHONE: '609-218-0968',
   WEBSITE: 'https://pawsplaystaywithhailey.com/',
 
   // Send the customer a copy of their request.
   CUSTOMER_COPY: true,
   CUSTOMER_MESSAGE:
     "Thanks for reaching out! Here's a copy of your request. " +
-    "I'll get back to you soon to confirm. Questions in the meantime? Call or text 609-218-0968.",
+    "I'll get back to you soon to confirm. Questions in the meantime? Just reply to this email.",
 
   // Requests containing any of these (not case-sensitive) are still delivered to
   // Hailey, but marked "Possible spam" and the customer copy is skipped.
@@ -212,7 +211,7 @@ function emailCustomer_(data) {
       '<p>' + esc_(CONFIG.CUSTOMER_MESSAGE) + '</p>' +
       '<p style="margin-top:20px"><b>Your request</b></p>' + table_(data) +
       '<p style="margin-top:20px">Hailey<br>' + esc_(CONFIG.BUSINESS_NAME) + '<br>' +
-      esc_(CONFIG.PHONE) + ' &middot; <a href="' + CONFIG.WEBSITE + '">' + CONFIG.WEBSITE + '</a></p>' +
+      '<a href="' + CONFIG.WEBSITE + '">pawsplaystaywithhailey.com</a></p>' +
       '</div>',
   });
 }
