@@ -113,6 +113,7 @@
             <span class="logo-display"><span class="ln">Paws, Play</span> <span class="ln"><span class="amp">&amp;</span> Stay with Hailey</span></span>
             <span class="h1-keywords">Dog Walking &amp; Pet Sitting in Boulder, CO</span>
           </h1>
+          <p class="service-areas"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-pin"/></svg><span>Also serving <span class="nowrap">Louisville ·</span> <span class="nowrap">Lafayette ·</span> <span class="nowrap">Superior ·</span> <span class="nowrap">Gunbarrel ·</span> <span class="nowrap">Longmont</span></span></p>
           <p class="tag-pill">Adventure. Care. Happy Dogs. <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-heart"/></svg></p>
           <p class="hero-sub">Your pets deserve the best care, even when you're away!</p>
           <p>Whether your pet needs a daily walk, an outdoor adventure, or a comfortable place to stay while you're away, Hailey provides personalized, reliable, and loving care.</p>
@@ -310,18 +311,18 @@
       <div class="wrap narrow">
         <p class="eyebrow">Book With Hailey</p>
         <h2>Booking Pet Care Should Be Simple!</h2>
-        <p class="lead">Tell Hailey what you need and when. She'll reply to confirm availability, then send your booking confirmation and payment instructions. New to Hailey? Start with a free meet-and-greet.</p>
+        <p class="lead">Booking, a free meet-and-greet, or just a question, it all starts here. Tell Hailey what you need and she'll reply to confirm availability, then send your booking confirmation and payment instructions. Outside Boulder and the nearby towns? Ask anyway.</p>
 
-        <form class="form" id="booking-form" data-form-name="booking" novalidate>
-          <input type="hidden" name="_subject" value="New booking request: Paws, Play &amp; Stay with Hailey">
+        <form class="form" id="request-form" data-form-name="request" novalidate>
+          <input type="hidden" name="_subject" value="New request: Paws, Play &amp; Stay with Hailey">
           <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 
           <fieldset>
             <legend>Your request</legend>
             <div class="grid-2">
-              <label>Service
+              <label>What can Hailey help with?
                 <select name="service" required>
-                  <option value="">Choose a service</option>
+                  <option value="">Choose one</option>
                   <option>Free meet-and-greet</option>
                   <option>Dog Walking ($30/hour)</option>
                   <option>Trail Hikes &amp; Adventures ($45)</option>
@@ -330,15 +331,19 @@
                   <option>Extended vacation care</option>
                   <option>Cat or other pet care</option>
                   <option>Special request</option>
+                  <option>Just have a question</option>
                 </select>
+              </label>
+              <label>Type of pet
+                <input type="text" name="pet_type" placeholder="Dog, cat…">
               </label>
               <label>Number of pets
                 <input type="number" name="number_of_pets" min="1" max="10" value="1" required>
               </label>
               <label>Start date
-                <input type="date" name="start_date" required>
+                <input type="date" name="start_date">
               </label>
-              <label>End date <span class="opt">(overnights &amp; vacations)</span>
+              <label><span>End date <span class="opt">(overnights &amp; vacations)</span></span>
                 <input type="date" name="end_date">
               </label>
               <label>Preferred time
@@ -358,7 +363,7 @@
               <label>Phone number <input type="tel" name="phone" autocomplete="tel" required></label>
               <label>Email address <input type="email" name="email" autocomplete="email" required></label>
               <label>Home address <input type="text" name="address" autocomplete="street-address"></label>
-              <label class="span-2">Emergency contact <span class="opt">(name &amp; phone)</span> <input type="text" name="emergency_contact"></label>
+              <label class="span-2"><span>Emergency contact <span class="opt">(name &amp; phone)</span></span> <input type="text" name="emergency_contact"></label>
             </div>
           </fieldset>
 
@@ -379,23 +384,9 @@
 
           <label>Special instructions or questions <textarea name="message" rows="3"></textarea></label>
 
-          <button class="btn btn-accent btn-lg" type="submit">Send booking request</button>
+          <button class="btn btn-accent btn-lg" type="submit">Send request</button>
           <p class="form-status" role="status" aria-live="polite"></p>
         </form>
-      </div>
-    </section>
-
-    <!-- SERVICE AREAS -->
-    <section class="section" id="areas">
-      <div class="wrap split">
-        <div>
-          <p class="eyebrow">Service Areas</p>
-          <h2>Boulder, Colorado &amp; nearby</h2>
-          <p class="lead">Hailey is based in Boulder and also accepts bookings in the surrounding towns. Outside the list? Send an inquiry and she'll let you know.</p>
-        </div>
-        <ul class="area-list">
-          <li>Boulder</li><li>Louisville</li><li>Lafayette</li><li>Superior</li><li>Gunbarrel</li><li>Longmont</li>
-        </ul>
       </div>
     </section>
 
@@ -422,7 +413,7 @@
 
     <!-- CONTACT -->
     <section class="section" id="contact">
-      <div class="wrap contact-grid">
+      <div class="wrap contact-simple">
         <div>
           <p class="eyebrow">Contact Hailey</p>
           <h2>Let's Get Your Pet's Next Adventure Started!</h2>
@@ -431,35 +422,8 @@
             <li data-contact="email" hidden><span>Email</span><a href="#"></a></li>
             <li><span>Instagram</span><a href="https://www.instagram.com/hailey.nardone/" target="_blank" rel="noopener">@hailey.nardone</a></li>
           </ul>
-          <a class="btn btn-accent btn-lg" href="#book">Book With Hailey</a>
+          <a class="btn btn-accent btn-lg" href="#book">Send Hailey a request</a>
         </div>
-
-        <form class="form card-form" id="contact-form" data-form-name="contact" novalidate>
-          <input type="hidden" name="_subject" value="New message: Paws, Play &amp; Stay website">
-          <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <div class="grid-2">
-            <label>Name <input type="text" name="name" autocomplete="name" required></label>
-            <label>Email <input type="email" name="email" autocomplete="email" required></label>
-            <label>Phone <input type="tel" name="phone" autocomplete="tel"></label>
-            <label>Type of pet <input type="text" name="pet_type" placeholder="Dog, cat…"></label>
-            <label>Service requested
-              <select name="service">
-                <option value="">Not sure yet</option>
-                <option>Dog Walking</option>
-                <option>Trail Hikes &amp; Adventures</option>
-                <option>Overnight Pet Sitting at Your Home</option>
-                <option>Overnight Boarding at Hailey's Home</option>
-                <option>Bathing Add-On</option>
-                <option>Other pet care</option>
-              </select>
-            </label>
-            <label>Number of pets <input type="number" name="number_of_pets" min="1" max="10"></label>
-            <label class="span-2">Preferred dates <input type="text" name="preferred_dates"></label>
-          </div>
-          <label>Additional information <textarea name="message" rows="4" required></textarea></label>
-          <button class="btn btn-accent" type="submit">Send message</button>
-          <p class="form-status" role="status" aria-live="polite"></p>
-        </form>
       </div>
     </section>
   </main>
@@ -496,6 +460,7 @@
     <symbol id="ico-moon" viewBox="0 0 32 32"><path d="M21 5a11 11 0 1 0 6 19.5A9 9 0 0 1 21 5Z"/><circle cx="24" cy="9" r="1.4"/><circle cx="27.5" cy="15" r="1"/></symbol>
     <symbol id="ico-drop" viewBox="0 0 32 32"><path d="M16 4c5 6.5 8 11 8 15a8 8 0 0 1-16 0c0-4 3-8.5 8-15Z"/></symbol>
     <symbol id="ico-heart" viewBox="0 0 24 24"><path d="M12 20.5C6 16.3 2.8 13.2 2.8 9.3A4.6 4.6 0 0 1 12 7a4.6 4.6 0 0 1 9.2 2.3c0 3.9-3.2 7-9.2 11.2Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+    <symbol id="ico-pin" viewBox="0 0 24 24"><path d="M12 2.5a7 7 0 0 0-7 7c0 5.2 7 12 7 12s7-6.8 7-12a7 7 0 0 0-7-7Zm0 9.6a2.6 2.6 0 1 1 0-5.2 2.6 2.6 0 0 1 0 5.2Z"/></symbol>
     <symbol id="ico-phone" viewBox="0 0 24 24"><path d="M6.6 3.5 9 3l1.6 4.2-2 1.4a12 12 0 0 0 6.8 6.8l1.4-2L21 15l-.5 2.4a2.5 2.5 0 0 1-2.6 2A15.6 15.6 0 0 1 4.6 6.1a2.5 2.5 0 0 1 2-2.6Z"/></symbol>
     <symbol id="ridge" viewBox="0 0 1440 90"><path d="M0 90 V62 L70 40 L120 52 L210 18 L290 48 L360 34 L450 60 L540 26 L620 44 L700 12 L790 46 L880 30 L960 56 L1050 22 L1130 42 L1210 28 L1300 54 L1380 36 L1440 46 V90Z"/><path d="M150 52 l9 -24 l9 24Z M162 54 l7 -18 l7 18Z M1240 50 l9 -26 l9 26Z M1256 52 l7 -18 l7 18Z M640 46 l8 -20 l8 20Z"/></symbol>
     <symbol id="flatirons" viewBox="0 0 400 220">

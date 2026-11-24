@@ -63,7 +63,7 @@
   // "Free meet-and-greet" buttons preselect that service in the booking form.
   document.querySelectorAll("[data-meet]").forEach(function (el) {
     el.addEventListener("click", function () {
-      var sel = document.querySelector('#booking-form select[name="service"]');
+      var sel = document.querySelector('#request-form select[name="service"]');
       if (sel) sel.value = "Free meet-and-greet";
     });
   });
@@ -137,9 +137,7 @@
         if (!res.ok) throw new Error("HTTP " + res.status);
         form.reset();
         started = false;
-        setStatus(name === "booking"
-          ? "Thanks! Your request is on its way. Hailey will reply to confirm availability."
-          : "Thanks! Your message is on its way. Hailey will be in touch soon.", "ok");
+        setStatus("Thanks! Your request is on its way. Hailey will get back to you soon.", "ok");
         track("generate_lead", name);
       }).catch(function () {
         setStatus("Sorry, something went wrong sending that. " + fallbackMessage().replace("Online requests aren't switched on yet. ", ""), "err");
@@ -157,9 +155,9 @@
   });
 
   /* ---------- Gallery carousel ---------- */
-  var track = document.getElementById("gallery-track");
-  if (track) {
-    var slides = Array.prototype.slice.call(track.children);
+  var gallery = document.getElementById("gallery-track");
+  if (gallery) {
+    var slides = Array.prototype.slice.call(gallery.children);
     var prevBtn = document.querySelector(".car-prev");
     var nextBtn = document.querySelector(".car-next");
     var dotsWrap = document.querySelector(".car-dots");
@@ -175,29 +173,29 @@
       return b;
     });
     function step() {
-      return slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth;
+      return slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : gallery.clientWidth;
     }
     function goTo(i) {
       i = Math.max(0, Math.min(slides.length - 1, i));
-      track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: "smooth" });
+      gallery.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: "smooth" });
     }
-    function perView() { return Math.max(1, Math.round(track.clientWidth / step())); }
+    function perView() { return Math.max(1, Math.round(gallery.clientWidth / step())); }
     function update() {
-      var max = track.scrollWidth - track.clientWidth - 2;
-      var idx = track.scrollLeft >= max ? slides.length - 1 : Math.round(track.scrollLeft / step());
-      prevBtn.disabled = track.scrollLeft <= 2;
-      nextBtn.disabled = track.scrollLeft >= max;
+      var max = gallery.scrollWidth - gallery.clientWidth - 2;
+      var idx = gallery.scrollLeft >= max ? slides.length - 1 : Math.round(gallery.scrollLeft / step());
+      prevBtn.disabled = gallery.scrollLeft <= 2;
+      nextBtn.disabled = gallery.scrollLeft >= max;
       dots.forEach(function (d, i) { d.setAttribute("aria-current", i === idx ? "true" : "false"); });
     }
-    prevBtn.addEventListener("click", function () { goTo(Math.round(track.scrollLeft / step()) - perView()); });
-    nextBtn.addEventListener("click", function () { goTo(Math.round(track.scrollLeft / step()) + perView()); });
+    prevBtn.addEventListener("click", function () { goTo(Math.round(gallery.scrollLeft / step()) - perView()); });
+    nextBtn.addEventListener("click", function () { goTo(Math.round(gallery.scrollLeft / step()) + perView()); });
     var ticking = false;
-    track.addEventListener("scroll", function () {
+    gallery.addEventListener("scroll", function () {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(function () { ticking = false; update(); });
     }, { passive: true });
-    track.addEventListener("scrollend", update);
+    gallery.addEventListener("scrollend", update);
     window.addEventListener("resize", update);
     update();
   }
