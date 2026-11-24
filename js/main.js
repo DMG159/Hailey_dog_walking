@@ -2,32 +2,75 @@
   "use strict";
   var cfg = window.SITE_CONFIG || {};
 
-  /* ---------- Analytics (GoatCounter, cookieless) ---------- */
-  // Nothing loads until GOATCOUNTER_CODE is filled in (js/config.js).
-  if (cfg.GOATCOUNTER_CODE) {
-    var gc = document.createElement("script");
-    gc.async = true;
-    gc.src = "https://gc.zgo.at/count.js";
-    gc.setAttribute("data-goatcounter", "https://" + cfg.GOATCOUNTER_CODE + ".goatcounter.com/count");
-    document.head.appendChild(gc);
+  /* ---------- Analytics: Google Tag Manager behind a cookie banner ---------- */
+  // GTM (and GA4 inside it) loads only after the visitor accepts. The choice is
+  // kept in an "analytics" cookie for a year; "Cookie settings" in the footer
+  // reopens the banner. Declining clears Google Analytics cookies.
+  window.dataLayer = window.dataLayer || [];
+  var CONSENT_COOKIE = "analytics";
+  var gtmLoaded = false;
+
+  function getConsent() {
+    var m = document.cookie.match(/(?:^|;\s*)analytics=(granted|denied)/);
+    return m ? m[1] : null;
+  }
+  function saveConsent(value) {
+    var c = CONSENT_COOKIE + "=" + value + "; path=/; max-age=31536000; SameSite=Lax";
+    if (location.protocol === "https:") c += "; Secure";
+    document.cookie = c;
+  }
+  function clearAnalyticsCookies() {
+    var host = location.hostname.replace(/^www\./, "");
+    document.cookie.split(/;\s*/).forEach(function (c) {
+      var n = c.split("=")[0];
+      if (/^(_ga|_gid|_gat|_gcl)/.test(n)) {
+        ["", "; domain=" + host, "; domain=." + host].forEach(function (d) {
+          document.cookie = n + "=; path=/; max-age=0" + d;
+        });
+      }
+    });
+  }
+  function loadGTM() {
+    if (gtmLoaded || !cfg.GTM_ID) return;
+    gtmLoaded = true;
+    window.dataLayer.push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtm.js?id=" + encodeURIComponent(cfg.GTM_ID);
+    document.head.appendChild(s);
   }
 
-  // Sends a GoatCounter event; queues it if the script hasn't loaded yet.
-  var queue = [];
-  function track(name, label) {
-    if (!cfg.GOATCOUNTER_CODE) return;
-    var ev = { path: name + (label ? "/" + label : ""), title: name, event: true };
-    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count(ev);
-    else queue.push(ev);
+  // Form events for GA4 (via Tag Manager): form_start, generate_lead, form_error.
+  // Pushed to the dataLayer; Tag Manager only sees them if the visitor accepted.
+  function track(event, params) {
+    if (!cfg.GTM_ID) return;
+    var data = { event: event };
+    for (var k in params) data[k] = params[k];
+    window.dataLayer.push(data);
   }
-  window.addEventListener("load", function () {
-    var tries = 0;
-    (function flush() {
-      if (window.goatcounter && window.goatcounter.count) {
-        while (queue.length) window.goatcounter.count(queue.shift());
-      } else if (queue.length && tries++ < 20) setTimeout(flush, 500);
-    })();
-  });
+
+  var banner = document.getElementById("cookie-banner");
+  if (cfg.GTM_ID && banner) {
+    var consent = getConsent();
+    if (consent === "granted") loadGTM();
+    else if (!consent) banner.hidden = false;
+    banner.addEventListener("click", function (e) {
+      var value = e.target.getAttribute("data-consent");
+      if (!value) return;
+      saveConsent(value);
+      banner.hidden = true;
+      if (value === "granted") loadGTM();
+      else {
+        clearAnalyticsCookies();
+        if (gtmLoaded) location.reload(); // stop the tag already running on this page
+      }
+    });
+    var settingsBtn = document.getElementById("cookie-settings");
+    if (settingsBtn) {
+      settingsBtn.hidden = false;
+      settingsBtn.addEventListener("click", function () { banner.hidden = false; });
+    }
+  }
 
   /* ---------- Mobile nav ---------- */
   var toggle = document.querySelector(".nav-toggle");
@@ -103,7 +146,7 @@
     }
 
     form.addEventListener("input", function () {
-      if (!started) { started = true; track("form_start", name); }
+      if (!started) { started = true; track("form_start", { form_name: name }); }
     });
 
     // Plain-language label for a field, e.g. "Phone number"
@@ -151,12 +194,12 @@
         setStatus("Almost there! Please fix: " + bad.map(labelFor).join(", ") + ".", "err");
         bad[0].scrollIntoView({ block: "center", behavior: "smooth" });
         bad[0].focus({ preventScroll: true });
-        track("form_error", name + "-validation");
+        track("form_error", { form_name: name, error_type: "validation" });
         return;
       }
       if (!cfg.FORM_ENDPOINT) {
         setStatus(fallbackMessage(), "err");
-        track("form_error", name + "-not-configured");
+        track("form_error", { form_name: name, error_type: "not_configured" });
         return;
       }
       if (Date.now() - PAGE_OPENED < 3000) {
@@ -182,7 +225,7 @@
         form.reset();
         started = false;
         setStatus("Thanks! Your request is on its way, and a copy is in your inbox. Hailey will get back to you soon.", "ok");
-        track("generate_lead", name);
+        track("generate_lead", { form_name: name });
       }).catch(function (err) {
         if (String(err && err.message) === "rate") {
           setStatus("You've already sent a few requests. Hailey will be in touch soon!", "ok");
@@ -190,7 +233,7 @@
         }
         setStatus("Sorry, your request didn't go through. Please try again, or " +
           (cfg.PHONE ? "call or text " + cfg.PHONE : "message Hailey on Instagram") + ".", "err");
-        track("form_error", name + "-send-failed");
+        track("form_error", { form_name: name, error_type: "send_failed" });
       }).finally(function () {
         clearTimeout(timer);
         button.disabled = false;

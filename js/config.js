@@ -2,11 +2,10 @@
    SITE SETTINGS: fill these in. Anything left empty stays switched off.
    ===================================================================== */
 window.SITE_CONFIG = {
-  // GoatCounter site code (cookieless analytics, no cookie banner needed).
-  // Sign up free at https://www.goatcounter.com. If your dashboard is
-  // https://haileyspetcare.goatcounter.com, the code is "haileyspetcare".
-  // Leave empty and no analytics loads.
-  GOATCOUNTER_CODE: "",
+  // Google Tag Manager container (GA4 is configured inside Tag Manager).
+  // Sets cookies, so it only loads after a visitor clicks Accept on the
+  // cookie banner. Leave empty to turn off analytics and the banner.
+  GTM_ID: "GTM-K3LM7257",
 
   // Request form: the Google Apps Script web app URL (ends in /exec).
   // See apps-script/SETUP.md. Requests are emailed from Hailey's Google
