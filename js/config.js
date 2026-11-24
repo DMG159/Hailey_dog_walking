@@ -12,7 +12,7 @@ window.SITE_CONFIG = {
   // See apps-script/SETUP.md. Requests are emailed from Hailey's Google
   // Workspace account (cc Dillon), logged to a Google Sheet, and the customer
   // gets a copy. Leave empty and the form asks visitors to call/text instead.
-  FORM_ENDPOINT: "",
+  FORM_ENDPOINT: "https://script.google.com/macros/s/AKfycbwaVjO66wFr6s6OXCTSfoJoZKs6QMVmPoLgBrBGznwW17JdUoRpcC1KprLf0ORPVSmMmg/exec",
 
   // Hailey's contact details. Leave empty to hide that option on the site.
   PHONE: "",        // left empty on purpose so no number is published
