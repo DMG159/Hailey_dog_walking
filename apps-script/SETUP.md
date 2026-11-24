@@ -18,7 +18,7 @@ It's free. A Workspace account can send about 1,500 emails a day.
 3. Delete everything in `Code.gs`. Paste in the full contents of
    [`apps-script/Code.gs`](Code.gs) from this repo, then press **Save** (the disk icon).
    - Optional: the settings at the top (`CONFIG`) control who gets emails, the cc,
-     and the message customers receive. `SEND_TO` blank means "this account".
+     and the message customers receive. `SEND_TO` is already set to hnardone@pawsplaystaywithhailey.com.
 4. **Run setup once.** In the toolbar, choose **setup** from the function menu
    and press **Run**.
    - Google asks for permission. Click **Review permissions**, choose Hailey's
