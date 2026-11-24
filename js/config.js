@@ -15,7 +15,7 @@ window.SITE_CONFIG = {
   FORMSPREE_ID: "",
 
   // Hailey's contact details. Leave empty to hide that option on the site.
-  PHONE: "",        // e.g. "(303) 555-0123"
+  PHONE: "609-218-0968",
   EMAIL: "",        // e.g. "hailey@example.com"
 
   // Link to Hailey's Google review page (from her Google Business Profile).
